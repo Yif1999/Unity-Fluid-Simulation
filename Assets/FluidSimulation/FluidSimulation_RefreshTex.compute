@@ -5,11 +5,13 @@
 StructuredBuffer<CellData> _CellDatas;
 RWTexture2D<float4> _FluidTexture;
 
+int _CellDatasLength;
+
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x + id.y * _Resolution.x;
-	if(index >= _CellDatas.Length) {
+	if(index >= _CellDatasLength) {
 		return;
 	}
 

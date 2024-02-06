@@ -6,6 +6,7 @@ StructuredBuffer<CellData> _CellDatas;
 RWStructuredBuffer<VortexData> _VortexDatas;
 
 float _VortexIntensity;
+int _CellDatasLength;
 
 float GetCurl(int2 coord) {
     int2 leftCellCoord = coord + int2(-1, 0);
@@ -30,7 +31,7 @@ float GetCurl(int2 coord) {
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x;
-	if(index >= _CellDatas.Length) {
+	if(index >= _CellDatasLength) {
 		return;
 	}
 

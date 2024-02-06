@@ -6,11 +6,14 @@ RWStructuredBuffer<CellData> _CellDatas;
 RWStructuredBuffer<StaggeredPoint> _UStaggeredPoints;
 RWStructuredBuffer<StaggeredPoint> _VStaggeredPoints;
 
+int _CellDatasLength;
+int _UStaggeredPointsLength;
+
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x + id.y * _Resolution.x;
-	if(index >= _CellDatas.Length) {
+	if(index >= _CellDatasLength) {
 		return;
 	}
 
@@ -52,8 +55,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
 	cellData.leftStaggeredPointSummaryIndex = leftStaggeredPointIndex * 2 + leftStaggeredPointSummaryNumber;
 	cellData.rightStaggeredPointSummaryIndex = rightStaggeredPointIndex * 2 + rightStaggeredPointSummaryNumber;
-	cellData.upStaggeredPointSummaryIndex = (upStaggeredPointIndex + _UStaggeredPoints.Length) * 2 + upStaggeredPointSummaryNumber;
-	cellData.downStaggeredPointSummaryIndex = (downStaggeredPointIndex + _UStaggeredPoints.Length) * 2 + downStaggeredPointSummaryNumber;
+	cellData.upStaggeredPointSummaryIndex = (upStaggeredPointIndex + _UStaggeredPointsLength) * 2 + upStaggeredPointSummaryNumber;
+	cellData.downStaggeredPointSummaryIndex = (downStaggeredPointIndex + _UStaggeredPointsLength) * 2 + downStaggeredPointSummaryNumber;
 
 	_CellDatas[index] = cellData;
 }

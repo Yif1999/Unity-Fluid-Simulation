@@ -6,6 +6,9 @@ RWStructuredBuffer<StaggeredPoint> _UStaggeredPoints;
 RWStructuredBuffer<StaggeredPoint> _VStaggeredPoints;
 RWStructuredBuffer<float> _SummaryDatas;
 
+int _UStaggeredPointsLength;
+int _VStaggeredPointsLength;
+
 float AverageVelocity(StaggeredPoint staggeredPoint, int index) {
     int counter = 0;
     float velocity = 0;
@@ -37,16 +40,16 @@ float AverageVelocity(StaggeredPoint staggeredPoint, int index) {
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
-    if(index >= _UStaggeredPoints.Length + _VStaggeredPoints.Length) {
+    if(index >= _UStaggeredPointsLength + _VStaggeredPointsLength) {
 		return;
 	}
 
     StaggeredPoint staggeredPoint;
     
-    if(index >= _UStaggeredPoints.Length) {
-        staggeredPoint = _VStaggeredPoints[index % _UStaggeredPoints.Length];
+    if(index >= _UStaggeredPointsLength) {
+        staggeredPoint = _VStaggeredPoints[index % _UStaggeredPointsLength];
         staggeredPoint.velocity = AverageVelocity(staggeredPoint, index);
-        _VStaggeredPoints[index % _UStaggeredPoints.Length] = staggeredPoint;
+        _VStaggeredPoints[index % _UStaggeredPointsLength] = staggeredPoint;
     }
     else {
         staggeredPoint = _UStaggeredPoints[index];

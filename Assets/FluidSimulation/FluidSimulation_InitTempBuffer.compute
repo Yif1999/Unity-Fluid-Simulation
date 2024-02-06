@@ -5,11 +5,13 @@
 RWStructuredBuffer<AdvectData> _AdvectDatas;
 RWStructuredBuffer<VortexData> _VortexDatas;
 
+int _AdvectDatasLength;
+
 [numthreads(256,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x;
-	if(index >= _AdvectDatas.Length) {
+	if(index >= _AdvectDatasLength) {
 		return;
 	}
 

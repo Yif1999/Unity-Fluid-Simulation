@@ -7,16 +7,19 @@ StructuredBuffer<InjectData> _InjectDatas;
 StructuredBuffer<StaggeredPoint> _UStaggeredPoints;
 StructuredBuffer<StaggeredPoint> _VStaggeredPoints;
 
+int _CellDatasLength;
+int _InjectDatasLength;
+
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x + id.y * _Resolution.x;
-	if(index >= _CellDatas.Length) {
+	if(index >= _CellDatasLength) {
 		return;
 	}
 
 	CellData cellData = _CellDatas[index];
-	for(uint iii = 0; iii < _InjectDatas.Length; iii++) {
+	for(uint iii = 0; iii < _InjectDatasLength; iii++) {
 		InjectData injectData = _InjectDatas[iii];
 
 		float dist = distance(cellData.coord, injectData.center);

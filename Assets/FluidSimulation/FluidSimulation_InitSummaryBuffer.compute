@@ -2,11 +2,13 @@
 
 RWStructuredBuffer<float> _SummaryDatas;
 
+int _SummaryDatasLength;
+
 [numthreads(256,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x;
-	if(index >= _SummaryDatas.Length) {
+	if(index >= _SummaryDatasLength) {
 		return;
 	}
 

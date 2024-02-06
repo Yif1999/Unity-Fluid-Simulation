@@ -71,73 +71,94 @@ public class FluidSimulation : MonoBehaviour {
         initStaggeredPointCS.SetInts("_Resolution", resolution.x, resolution.y);
         initStaggeredPointCS.SetInt("_ColumnNumber", resolution.x + 1);
         initStaggeredPointCS.SetInt("_WallThickness", fixedWallThickness);
+        initStaggeredPointCS.SetInt("_StaggeredPointsLength", uStaggeredPointBuffer.count);
         initStaggeredPointCS.SetBuffer(mainKernel, "_StaggeredPoints", uStaggeredPointBuffer);
         initStaggeredPointCS.Dispatch(mainKernel, resolution.x + 1, resolution.y, 1);
 
         initStaggeredPointCS.SetInts("_Resolution", resolution.x, resolution.y);
         initStaggeredPointCS.SetInt("_ColumnNumber", resolution.x);
         initStaggeredPointCS.SetInt("_WallThickness", fixedWallThickness);
+        initStaggeredPointCS.SetInt("_StaggeredPointsLength", vStaggeredPointBuffer.count);
         initStaggeredPointCS.SetBuffer(mainKernel, "_StaggeredPoints", vStaggeredPointBuffer);
         initStaggeredPointCS.Dispatch(mainKernel, resolution.x, resolution.y + 1, 1);
 
         initCellCS.SetInts("_Resolution", resolution.x, resolution.y);
+        initCellCS.SetInt("_CellDatasLength", cellDataBuffer.count);
+        initCellCS.SetInt("_UStaggeredPointsLength", uStaggeredPointBuffer.count);
+        initCellCS.SetInt("_VStaggeredPointsLength", vStaggeredPointBuffer.count);
         initCellCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         initCellCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         initCellCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
         initCellCS.Dispatch(mainKernel, resolution.x, resolution.y, 1);
 
+        initTempBufferCS.SetInt("_AdvectDatasLength", advectBuffer.count);
         initTempBufferCS.SetBuffer(mainKernel, "_AdvectDatas", advectBuffer);
         initTempBufferCS.SetBuffer(mainKernel, "_VortexDatas", vortexBuffer);
         initTempBufferCS.Dispatch(mainKernel, Mathf.CeilToInt(advectBuffer.count / 256f), 1, 1);
 
+        initSummaryBufferCS.SetInt("_SummaryDatasLength", summaryBuffer.count);
         initSummaryBufferCS.SetBuffer(mainKernel, "_SummaryDatas", summaryBuffer);
         initSummaryBufferCS.Dispatch(mainKernel, Mathf.CeilToInt(summaryBuffer.count / 256f), 1, 1);
 
+        summaryStaggeredPointVelocityCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         summaryStaggeredPointVelocityCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         summaryStaggeredPointVelocityCS.SetBuffer(mainKernel, "_SummaryDatas", summaryBuffer);
 
+        averageSummaryStaggeredPointVelocityCS.SetInt("_UStaggeredPointsLength", uStaggeredPointBuffer.count);
+        averageSummaryStaggeredPointVelocityCS.SetInt("_VStaggeredPointsLength", vStaggeredPointBuffer.count);
         averageSummaryStaggeredPointVelocityCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         averageSummaryStaggeredPointVelocityCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
         averageSummaryStaggeredPointVelocityCS.SetBuffer(mainKernel, "_SummaryDatas", summaryBuffer);
 
         projectCS.SetInts("_Resolution", resolution.x, resolution.y);
+        projectCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         projectCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         projectCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         projectCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
         projectCS.SetBuffer(mainKernel, "_SummaryDatas", summaryBuffer);
 
+        averageProjectCS.SetInt("_UStaggeredPointsLength", uStaggeredPointBuffer.count);
+        averageProjectCS.SetInt("_VStaggeredPointsLength", vStaggeredPointBuffer.count);
         averageProjectCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         averageProjectCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
         averageProjectCS.SetBuffer(mainKernel, "_SummaryDatas", summaryBuffer);
 
+        applyProjectCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         applyProjectCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         applyProjectCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         applyProjectCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
 
         vortexCS.SetInts("_Resolution", resolution.x, resolution.y);
+        vortexCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         vortexCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         vortexCS.SetBuffer(mainKernel, "_VortexDatas", vortexBuffer);
 
+        applyVortexCS.SetInt("_VortexDatasLength", vortexBuffer.count);
         applyVortexCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         applyVortexCS.SetBuffer(mainKernel, "_VortexDatas", vortexBuffer);
 
         advectCS.SetInts("_Resolution", resolution.x, resolution.y);
+        advectCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         advectCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         advectCS.SetBuffer(mainKernel, "_AdvectDatas", advectBuffer);
         advectCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         advectCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
 
+        applyAdvectCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         applyAdvectCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         applyAdvectCS.SetBuffer(mainKernel, "_AdvectDatas", advectBuffer);
 
+        dampingCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         dampingCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
 
         injectCS.SetInts("_Resolution", resolution.x, resolution.y);
+        injectCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         injectCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         injectCS.SetBuffer(mainKernel, "_UStaggeredPoints", uStaggeredPointBuffer);
         injectCS.SetBuffer(mainKernel, "_VStaggeredPoints", vStaggeredPointBuffer);
 
         refreshTextureCS.SetInts("_Resolution", resolution.x, resolution.y);
+        refreshTextureCS.SetInt("_CellDatasLength", cellDataBuffer.count);
         refreshTextureCS.SetBuffer(mainKernel, "_CellDatas", cellDataBuffer);
         refreshTextureCS.SetTexture(mainKernel, "_FluidTexture", fluidTexture);
     }
@@ -158,17 +179,17 @@ public class FluidSimulation : MonoBehaviour {
 
     public void Refresh() {
         UpdateParameters();
-
+        
         VorticityConfinement();
-
+        
         PrepareStaggeredPointVelocity();
-
+        
         Project();
-
+        
         Advect();
-
+        
         Damping();
-
+        
         RefreshTexture();
 
         Inject();
@@ -213,6 +234,7 @@ public class FluidSimulation : MonoBehaviour {
             injectDataBuffer = new ComputeBuffer(1, FluidSimulationBufferStride.injectData);
             injectDataBuffer.SetData(new InjectData[1] { injectData });
 
+            injectCS.SetInt("_InjectDatasLength", injectDataBuffer.count);
             injectCS.SetBuffer(mainKernel, "_InjectDatas", injectDataBuffer);
             injectCS.Dispatch(mainKernel, resolution.x, resolution.y, 1);
 
@@ -230,6 +252,7 @@ public class FluidSimulation : MonoBehaviour {
         injectDataBuffer = new ComputeBuffer(injectDatas.Count, FluidSimulationBufferStride.injectData);
         injectDataBuffer.SetData(injectDatas);
 
+        injectCS.SetInt("_InjectDatasLength", injectDataBuffer.count);
         injectCS.SetBuffer(mainKernel, "_InjectDatas", injectDataBuffer);
         injectCS.Dispatch(mainKernel, resolution.x, resolution.y, 1);
 
@@ -238,7 +261,6 @@ public class FluidSimulation : MonoBehaviour {
 
     private void PrepareStaggeredPointVelocity() {
         summaryStaggeredPointVelocityCS.Dispatch(mainKernel, Mathf.CeilToInt(cellDataBuffer.count / 256f), 1, 1);
-
         averageSummaryStaggeredPointVelocityCS.Dispatch(mainKernel, Mathf.CeilToInt((uStaggeredPointBuffer.count + vStaggeredPointBuffer.count) / 256f), 1, 1);
     }
 
@@ -256,7 +278,6 @@ public class FluidSimulation : MonoBehaviour {
     private void VorticityConfinement() {
         for (int i = 0; i < vortexIteration; i++) {
             vortexCS.Dispatch(mainKernel, Mathf.CeilToInt(cellDataBuffer.count / 256f), 1, 1);
-
             applyVortexCS.Dispatch(mainKernel, Mathf.CeilToInt(cellDataBuffer.count / 256f), 1, 1);
         }
     }
@@ -264,7 +285,6 @@ public class FluidSimulation : MonoBehaviour {
     private void Advect() {
         for (int i = 0; i < advectIteration; i++) {
             advectCS.Dispatch(mainKernel, Mathf.CeilToInt(cellDataBuffer.count / 256f), 1, 1);
-
             applyAdvectCS.Dispatch(mainKernel, Mathf.CeilToInt(cellDataBuffer.count / 256f), 1, 1);
         }
     }

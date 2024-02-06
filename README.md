@@ -1,5 +1,5 @@
 # Unity Fluid Simulation
 
-## This project was created in Unity 2021.3, Universal RP
+Fork 修改了原作者的代码，Compute Shader 适配 Metal API，迁移至 Unity 2022.3.18f1 (URP14)。
 
-https://github.com/MagicStones23/Unity-Fluid-Simulation/assets/129722386/9ceb29c6-f8bb-4a15-9431-0a8d7bcb6437
+该方法仍存在网格取向效应，流体形态存在错误的各向异性，暂时没有解决。

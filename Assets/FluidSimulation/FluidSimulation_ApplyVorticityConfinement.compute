@@ -5,13 +5,15 @@
 RWStructuredBuffer<CellData> _CellDatas;
 RWStructuredBuffer<VortexData> _VortexDatas;
 
+int _VortexDatasLength;
+
 float _MaxSpeed;
 
 [numthreads(256,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
-    if(index >= _VortexDatas.Length) {
+    if(index >= _VortexDatasLength) {
 		return;
 	}
 
